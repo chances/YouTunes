@@ -1,0 +1,7 @@
+{
+    "search": {
+        "scope": "project",
+        "excludeFolders": [ "built", "bin", "node_modules" ],
+        "excludeFiles": [ ".d.ts" ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+	"manifest_version": 2,
+
+	"name": "YouTunes",
+	"version": "1.0.0",
+	"description": "Turns YouTube into your own personal music player.",
+	"icons": {
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
+	},
+	"background": {
+		"page": "client/background.html"
+	},
+	"browser_action": {
+		"default_icon": "icons/popupicon.png",
+		"default_title": "YouTunes",
+		"default_popup": "client/popup.html"
+	},
+	"content_scripts": [
+		{
+			"matches": ["http://web.cecs.pdx.edu/~chances/YouTunes/video.php*"],
+			"js": ["js/embeded/ytunes-content-script-player.js"],
+			"run_at": "document_end",
+			"all_frames": true
+		}
+	],
+	"permissions": [
+        "storage",
+		"http://gdata.youtube.com/*",
+		"http://web.cecs.pdx.edu/~chances/YouTunes/video.php*"
+	]
+}

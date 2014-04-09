@@ -1,0 +1,50 @@
+@import "compass/reset";
+@import "compass/utilities";
+@import "compass/css3";
+
+$playerWidth: 355px;
+$playerHeight: 250px;
+$playlistWidth: 65%;
+$revealSearch: 0 - $playerWidth - 50px + 5px;
+$volumeWidth: 50px;
+
+@mixin display-flex($direction: row) {
+    display: flex;
+    flex-direction: $direction;
+}
+
+@mixin flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+.form-button {
+    color: #333;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    padding: 9px 9px;
+    height: 25px;
+    background-color: #F3F3F3;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #eee;
+        box-shadow: inset 0 -1px 0 #ccc;
+    }
+    &:focus {
+        outline: none;
+        box-shadow: inset 0 -1px 0 #ccc;
+    }
+    &:active {
+        background-color: #e3e3e3;
+        box-shadow: inset 0 1px 0 #eee;
+    }
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+}

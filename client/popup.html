@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!-- With Inspiration from: http://dribbble.com/shots/903611-Mini-player?list=searches&tag=music_player -->
+<html ng-app="popup" ng-csp>
+	<head>
+    	<title>YouTunes</title>
+
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet">
+		<link href="css/popup.css" type="text/css" rel="stylesheet" />
+
+        <script type="text/javascript" src="js/lib/jquery.js"></script>
+        <script type="text/javascript" src="js/lib/jquery.keyframes.min.js"></script>
+        <script type="text/javascript" src="js/lib/angular.js"></script>
+
+        <script type="text/javascript" src="js/PlayerConstants.js"></script>
+        <script type="text/javascript" src="js/Track.js"></script>
+        <script type="text/javascript" src="js/Playlist.js"></script>
+        <script type="text/javascript" src="js/PlaylistCollection.js"></script>
+
+		<script type="text/javascript" src="js/modules/Popup.js"></script>
+
+		<script type="text/javascript" src="js/directives/PlayerView.js"></script>
+		<script type="text/javascript" src="js/directives/PaneSwitcher.js"></script>
+		<script type="text/javascript" src="js/directives/PlayPause.js"></script>
+        <script type="text/javascript" src="js/directives/PreviousNext.js"></script>
+        <script type="text/javascript" src="js/directives/TrackInfo.js"></script>
+		<script type="text/javascript" src="js/directives/Mute.js"></script>
+        <script type="text/javascript" src="js/directives/Volume.js"></script>
+		<script type="text/javascript" src="js/directives/Scrubber.js"></script>
+		<script type="text/javascript" src="js/directives/Duration.js"></script>
+
+		<script type="text/javascript" src="js/controllers/PlayerCtrl.js"></script>
+		<script type="text/javascript" src="js/controllers/SearchCtrl.js"></script>
+
+        <script type="text/javascript" src="js/helpers.js"></script>
+    </head>
+    <body>
+    	<div id="popup">
+    		<div id="playerPane" class="startup" ng-controller="PlayerCtrl">
+    			<player-view id="view">
+    				<div class="toolbar inset-top">
+						<playlists-button id="showPlaylists"></playlists-button>
+						<search-button id="searchBtn"></search-button>
+					</div>
+					<div class="toolbar inset-bottom">
+						<play-pause-button id="playPause" disabled></play-pause-button>
+						<mute id="mute" disabled></mute>
+                        <volume id="volume" class="hidden"></volume>
+					</div>
+				</player-view>
+				<scrubber id="scrubber" class="hidden"></scrubber>
+				<div class="toolbar">
+	                <previous-button id="prev" disabled title="Previous Track"></previous-button>
+	                <track-info>
+            			<span id="track">{{track()}}</span>
+            			<span id="timing">{{timing()}}</span>
+                		<span id="playbackStatus">{{status()}}</span>
+            		</track-info>
+                    <next-button id="next" disabled title="Next Track"></next-button>
+                </div>
+            </div>
+            <div id="mask" class="hidden"></div>
+            <div id="playlistsPane" class="hidden">
+                <header>
+                    <span>Playlists</span>
+                    <close-playlists-button id="closePlaylists"></close-playlists-button>
+                </header>
+                <hr />
+                <div id="playlistsPlaceholder" ng-show="playlists.length === 0">
+                    <span>No playlists</span>
+	            </div>
+                <div id="playlists" ng-show="playlists.length > 0">
+                    <ul>
+                        <!--li class="section-header">
+                            <span class="name">YouTunes</span>
+                        </li-->
+                        <li data-id="{{playlist.id}}" ng-repeat="playlist in playlists.playlists"
+                            ng-class="{playing: player.currentPlaylist === playlist}">
+                            <span class="playing-indicator"></span>
+                            <span class="name">{{playlist.name}} <span ng-show="playlist.length > 0">({{playlist.length}})</span></span>
+                            <button class="play" title="Play"
+                                    ng-show="playlist.length > 0 && player.currentPlaylist !== playlist"
+                                    ng-click="playPlaylist($event)"></button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="toolbar">
+                    <button id="add" title="Add a New Playlist"></button>
+                    <span class="flex"></span>
+                    <button id="manage" title="Open Playlists"></button>
+                </div>
+            </div>
+            <div id="searchPane" ng-controller="SearchCtrl">
+            	<header>
+		        	<back-button id="back"></back-button>
+		            <form id="search" ng-submit="search()">
+				    	<input id="query" type="text" placeholder="Search for music" required ng-model="query" />
+				    	<input id="submitBtn" class="form-button" type="submit" value="Search" ng-disabled="searching && startIndex === 1" />
+				    </form>
+		        </header>
+		        <div id="resultsPlaceholder" ng-class="{initial: initial}" ng-show="results.length === 0 || searching">
+                    <span ng-show="searching && startIndex === 1">Loading...</span>
+                    <!--span ng-show="!initial && !searching && results.length === 0">No results for '{{previousSearchQuery}}'</span-->
+                    <span ng-show="!initial && !searching && results.length === 0">No results</span>
+	            </div>
+                <div id="results" class="short" ng-hide="initial || results.length === 0 || (searching && startIndex === 1)">
+                    <div id="data">
+                        <div class="result-count">{{resultCount()}}</div>
+                        <table>
+                            <tbody>
+                                <tr ng-repeat="track in results">
+                                    <td class="thumb" data-id="{{track.id}}">
+                                        <img ng-src="{{track.thumbnail}}" />
+                                        <button class="thumb-button video-add" title="Add to Queue" ng-click="enqueue($event)"></button>
+                                        <button class="thumb-button video-play" title="Play" ng-click="play($event)"></button>
+                                    </td>
+                                    <td><span class="title">{{track.title}}</span></td>
+                                    <td><duration /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="resultNav">
+                        <a class="form-button" href="#" ng-click="more()" ng-show="showMore()">More results</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

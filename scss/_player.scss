@@ -1,0 +1,235 @@
+/* Icons from: https://www.iconfinder.com/search/?q=iconset%3Acc_mono_icon_set */
+/* Inverted with drop shadow added (GIMP: Black, Offest (x,y) = (0,1), Blur radius = 5, Opacity = 70) */
+/* Dark icons brightened by 30 with drop shadow added (GIMP: Black, Offest (x,y) = (0,1), Blur radius = 3, Opacity = 30) */
+
+#playerPane {
+    @include display-flex(column);
+    width: $playerWidth;
+    height: 250px;
+}
+
+#view {
+    @include display-flex(column);
+    justify-content: space-between;
+    flex: 1;
+    box-sizing: border-box;
+    //border-top: solid 1px rgba(255,255,255,0.5);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    transition: background-image 1.5s ease;
+}
+#playerPane.startup #view {
+    background-image: url(../icons/logo.png);
+    background-size: 75% auto;
+}
+
+#view > .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+}
+.toolbar.inset-top {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background: linear-gradient(rgba(0,0,0,0.6), transparent);
+}
+#playerPane.startup .toolbar.inset-top {
+    background: none;
+}
+.toolbar.inset-bottom {
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+}
+#playerPane.startup .toolbar.inset-bottom,
+#playerPane.single-track .toolbar.inset-bottom {
+    position: absolute;
+    bottom: 0;
+    background: none;
+}
+#playerPane.queue .toolbar.inset-bottom {
+    justify-content: flex-end;
+}
+
+@-webkit-keyframes buffering {
+    from  { background-position: 25px 0; }
+    to    { background-position: 0 0; }
+}
+
+#scrubber {
+    position: relative;
+    width: 100%;
+    height: 5px;
+    background-color: #000;
+    z-index: 1;
+    transition: height 0.3s ease;
+
+    &.buffering {
+        background-image: linear-gradient(-45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent);
+        background-size: 25px 25px;
+        -webkit-animation: buffering 0.4s linear infinite;
+    }
+    &.hidden {
+        height: 0px;
+    }
+
+    & > div {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        transition: width 0.15s ease;
+    }
+    &.buffering > div {
+        visibility: hidden;
+    }
+}
+#buffer {
+    background-color: rgba(255,255,255,0.3);
+    z-index: 2;
+}
+#elapsed {
+    background: linear-gradient(#e73e4a, #d23c47);
+    z-index: 3;
+}
+#scrubber.scrubbing #elapsed {
+    transition: none;
+}
+
+#playerPane > .toolbar {
+    color: white;
+    text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    height: 50px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.25)), url(../images/bar-bg.png) repeat-x;
+    box-shadow: inset 0 1px 0 0 #393a3c;
+}
+
+#trackInfo {
+    font-size: 10pt;
+    white-space: nowrap;
+    overflow: hidden;
+
+    & > * {
+        text-align: center;
+        display: block;
+    }
+}
+#track.overflow {
+    -webkit-transform-origin: right;
+    //-webkit-animation: scroll-text infinite alternate ease;
+    //-webkit-animation-duration: 1s;
+}
+#timing,
+#playbackStatus {
+    color: #9a9a9a;
+    font-size: 8pt;
+    padding-top: 4px;
+
+    &:empty {
+        display: none;
+    }
+}
+
+#showPlaylists {
+    background-image: url(../images/playlist.png);
+}
+
+#searchBtn {
+    background-image: url(../images/search.png);
+}
+
+#mute {
+    background-image: url(../images/high.png);
+    z-index: 6;
+
+    &.low {
+        background-image: url(../images/low.png);
+    }
+    &.muted {
+        background-image: url(../images/mute.png);
+    }
+}
+
+#volume {
+    position: absolute;
+    padding-left: 2.5px;
+    right: 39px;
+    width: $volumeWidth;
+    height: 50px;
+    overflow: hidden;
+    z-index: 4;
+    transition: width 0.2s ease-out;
+    &.hiding {
+        width: 0;
+    }
+    &.hidden {
+        display: none;
+        width: 0;
+    }
+}
+#playerPane.single-track #volume {
+    background: linear-gradient(transparent, rgba(0,0,0,0.25)), url(../images/bar-bg.png) repeat-x;
+}
+#well {
+    position: absolute;
+    right: 0;
+    bottom: calc(50% - 2px);
+    width: calc(100% - 2.5px);
+    height: 4px;
+    background-color: #000;
+    transition: -webkit-transform 0.2s ease-out;
+}
+#wellTrail {
+    position: absolute;
+    right: 0;
+    bottom: calc(50% - 2px);
+    height: 4px;
+    background-color: #e73e4a;
+    transition: -webkit-transform 0.2s ease-out;
+}
+#volume.hiding > div:not(#handle) {
+    -webkit-transform: translateX($volumeWidth + 2.5px);
+}
+#handle {
+    position: absolute;
+    margin-left: -2.5px;
+    top: calc(50% - 7px);
+    height: 14px;
+    width: 5px;
+    background-color: #dddddd;
+    cursor: pointer;
+}
+#volume.hiding #handle, #volume.hidden #handle {
+        visibility: hidden;
+    }
+
+#playPause.play {
+    background-image: url(../images/play.png);
+}
+#playPause.pause {
+    background-image: url(../images/pause.png);
+}
+#playerPane.queue #playPause {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#prev {
+    //border-right: solid 1px #2e3032;
+    background: url(../images/prev.png);
+}
+
+#next {
+    //border-right: solid 1px #2e3032;
+    background: url(../images/next.png);
+}
